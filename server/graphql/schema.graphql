@@ -1,0 +1,128 @@
+scalar JSON
+scalar JSONObject
+
+type User {
+  _id: ID!
+  username: String!
+  display_name: String
+  email: String!
+  password: String
+  resetToken: String
+  resetTokenExpiry: String
+  practice: Practice
+  roles: [String!]!
+}
+
+type Practice {
+  _id: ID!
+  name: String!
+  address: String!
+  phone_number: String!
+}
+
+type Appointment {
+  _id: ID!
+  patient: Patient!
+  doctor: User!
+  practice: Practice!
+  booked_by: User!
+  date: String
+}
+
+type Patient {
+  _id: ID!
+  name: String!
+  age: Int!
+  address: String
+  weight: String!
+  sex: String!
+  recent_heart_events: Boolean
+  current_health_assessment: HealthRisk
+  diabetes: Boolean
+  crp: CRPStatus
+  phone_number: String
+  doctor: String!
+  notes: [Note]
+  appointments: [Appointment]
+}
+
+enum HealthRisk {
+  HIGHRISK
+  MEDIUMRISK
+  LOWRISK
+}
+
+enum CRPStatus {
+  ABNORMAL
+  NORMAL
+}
+
+type Note {
+  _id: ID!
+  patient: Patient
+  text: String
+  date: String
+  sender: User
+}
+
+type SuccessMessage {
+  message: String
+}
+
+type Auth {
+  token: String!
+}
+
+type Query {
+  users: [User!]!
+  doctors: [User!]!
+  appointments: [Appointment]
+  practices: [Practice!]!
+  patient(_id: String, name: String): Patient
+  patients(search: String, doctor: String): [Patient!]!
+  me: User
+  notes(patientId: String!): [Note!]!
+}
+
+type Mutation {
+  signupUser(
+    username: String!
+    display_name: String
+    email: String!
+    password: String!
+    passwordConfirm: String!
+    practice: String
+    roles: [String!]!
+  ): Auth!
+  # signinUser(email: String!, password: String!): Auth!
+  signinUser(email: String!, password: String!): Auth
+  signoutUser: SuccessMessage!
+  requestReset(email: String!): SuccessMessage!
+  resetPassword(
+    password: String!
+    passwordConfirm: String!
+    resetToken: String!
+  ): User!
+  postNote(patient: String!, text: String!, date: String): Note!
+  addPractice(
+    name: String!
+    address: String!
+    phone_number: String!
+  ): Practice!
+  addPatient(
+    name: String!
+    age: Int!
+    sex: String!
+    weight: String!
+    recent_heart_events: Boolean
+    current_health_assessment: HealthRisk
+    diabetes: Boolean
+    crp: CRPStatus
+    phone_number: String
+    doctor: String!
+  ): Patient!
+}
+
+type Subscription {
+  newNote: Note!
+}

@@ -1,0 +1,15 @@
+{
+  "name": "very_vulnerable_gql_api",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Tim Clifford",
+  "scripts": {
+    "dev": "concurrently \"cd server && yarn dev\" \"cd client && yarn dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^5.1.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0"
+  }
+}
