@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A vulnerable GraphQL server",
   "scripts": {
-    "dev": "nodemon --inspect=0.0.0.0 index.js",
+    "dev": "DEBUG=* nodemon --inspect=0.0.0.0 index.js 2> logs.txt",
     "seed-local": "seed -u 'mongodb://localhost:27017/vuln-graphql-db' --drop-database ./import_data/data",
     "seed": "seed -u 'mongodb://db:27017/vuln-graphql-db' --drop-database ./import_data/data",
     "start": "node index.js"

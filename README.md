@@ -10,7 +10,7 @@ An intentionally vulnerable GraphQL based application.
 ## Getting started
 
 Build docker images and run in development mode:
-`docker-compose up`
+`docker-compose up -d`
 
 To run without docker you can run (but you will also need to run mongodb):
 `yarn install`
