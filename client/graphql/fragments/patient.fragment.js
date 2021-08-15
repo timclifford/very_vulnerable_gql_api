@@ -4,24 +4,32 @@ const PATIENT_FRAGMENT = gql`
   fragment patient on Patient {
     _id
     name
-    age
-    sex
-    weight
-    doctor
-    recent_heart_events
-    diabetes
-    current_health_assessment
-    crp
+    address
     phone_number
-    notes {
+    practice {
       _id
-      patient {
+      name
+      address
+    }
+    doctor
+    medical_record {
+      age
+      sex
+      weight
+      recent_heart_events
+      diabetes
+      current_health_assessment
+      crp
+      notes {
         _id
-      }
-      date
-      text
-      sender {
-        _id
+        patient {
+          _id
+        }
+        date
+        text
+        sender {
+          _id
+        }
       }
     }
   }

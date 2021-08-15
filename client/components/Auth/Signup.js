@@ -1,5 +1,5 @@
 import { useState, Fragment } from "react";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
 import {
   Alert,
   Form,
@@ -18,11 +18,13 @@ import CURRENT_USER_QUERY from "../../graphql/current-user.query";
 const Signup = () => {
   const [user, setUser] = useState({
     username: "",
+    display_name: "",
     email: "",
     password: "",
     passwordConfirm: "",
     mutationComplete: false,
   });
+
   const [signupUser, { error }] = useMutation(SIGNUP_MUTATION, {
     variables: user,
     update: (store, { data: { signupUser } }) => {
@@ -37,9 +39,11 @@ const Signup = () => {
         mutationComplete: true,
       }),
   });
+
   const saveToState = (evt) => {
     setUser({ ...user, [evt.target.name]: evt.target.value });
   };
+
   return (
     <Fragment>
       <Row style={{ paddingTop: "100px" }}>
@@ -54,6 +58,7 @@ const Signup = () => {
                   setUser({
                     ...user,
                     username: "",
+                    display_name: "",
                     email: "",
                     password: "",
                     passwordConfirm: "",
@@ -67,6 +72,15 @@ const Signup = () => {
                     name="username"
                     value={user.username}
                     placeholder="Username"
+                    onChange={saveToState}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Input
+                    type="text"
+                    name="display_name"
+                    value={user.display_name}
+                    placeholder="Display name"
                     onChange={saveToState}
                   />
                 </FormGroup>

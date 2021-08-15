@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
+import Router from "next/router";
 import {
   Alert,
   Button,
@@ -22,7 +23,8 @@ const Signin = () => {
     password: "",
     mutationComplete: false,
   });
-  const [signinUser, { error }] = useMutation(SIGNIN_MUTATION, {
+
+  const [signinUser, { error, called, loading }] = useMutation(SIGNIN_MUTATION, {
     variables: user,
     update: (store, { data: { signinUser } }) => {
       if (signinUser.token) {
@@ -35,8 +37,11 @@ const Signin = () => {
         ...user,
         mutationComplete: true,
       });
+      // let timedRedirect = setTimeout(() => Router.push("/dashboard"), 5000);
+      // clearTimeout(timedRedirect);
     },
   });
+
   const saveToState = (evt) => {
     setUser({ ...user, [evt.target.name]: evt.target.value });
   };
@@ -81,8 +86,13 @@ const Signin = () => {
           {error && (
             <CardFooter>
               <Alert style={{ marginBottom: "0" }} color="danger">
-                {error.message}
+                Failed to login: {error.message}
               </Alert>
+            </CardFooter>
+          )}
+          {called && !error && (
+            <CardFooter>
+              Signing in...
             </CardFooter>
           )}
           {user.mutationComplete && !error && (

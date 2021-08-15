@@ -2,3 +2,10 @@
 @tailwind components;
 
 @tailwind utilities;
+
+.spacer {
+  color: #ccc;
+  display: flex;
+  padding: 7px;
+  height: 40px;
+}

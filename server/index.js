@@ -10,6 +10,7 @@ const User = require("./models/User");
 const Practice = require("./models/Practice");
 const Appointment = require("./models/Appointment");
 const Patient = require("./models/Patient");
+const MedicalRecord = require("./models/MedicalRecord");
 const Note = require("./models/Note");
 require("dotenv").config();
 
@@ -21,14 +22,19 @@ const port = process.env.PORT || 8000;
 const pubsub = new PubSub();
 
 mongoose.Promise = global.Promise;
+// mongoose.set("debug", true);
+
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
+    poolSize: 2,
+    serverSelectionTimeoutMS: 2000,
+    socketTimeoutMS: 10000
   })
   .then(() => console.log(`MongoDB connected at ${process.env.MONGO_URI}`))
-  .catch((error) => console.error(error));
+  .catch((error) => console.log(error));
 
 const { ObjectId } = mongoose.Types;
 ObjectId.prototype.valueOf = function () {
@@ -37,9 +43,9 @@ ObjectId.prototype.valueOf = function () {
 
 app.use(cookieParser());
 app.use((req, res, next) => {
-  const { token } = req.cookies;
-  console.log("TOKEN COOKIE", token);
+  res.header({"Access-Control-Allow-Origin": "*"});
 
+  const { token } = req.cookies;
   if (token) {
     const { _id } = jwt.verify(token, process.env.JWT_SECRET);
     // put the userId onto the req for future requests to access
@@ -55,12 +61,9 @@ const graphQLServer = new ApolloServer({
     debugPrintReports: true,
   },
   context: ({ req, res, connection }) => {
-      //@TODO: https://stackoverflow.com/questions/57814293/my-apollo-servers-subscription-doesnt-works-cannot-read-property-headers-of
       let user;
-      if (connection) {
-        // Connection = context for subscriptions
-        //console.log('connection: ', connection);
 
+      if (connection) {
         return {
           ...connection.context,
           pubsub
@@ -68,7 +71,6 @@ const graphQLServer = new ApolloServer({
       }
       else {
         const token = req.headers.authorization || null;
-        //console.log('Auth headers: ', req.headers);
 
         if (!token) {
           return { User, req, res, pubsub, user };
@@ -82,22 +84,24 @@ const graphQLServer = new ApolloServer({
 
           if (/^Bearer$/i.test(scheme)) {
             var cred = credentials;
-
-            //console.log('CREDS', cred);
-            // Verify token
             user = jwt.verify(cred, process.env.JWT_SECRET);
           }
         }
 
           // Check is user has admin role.
           // if (!user || !user.roles.includes('admin')) return null;
-
               // optionally block the user
               // we could also check user roles/permissions here
               // if (!user) throw new AuthenticationError('You must be logged in');
 
-        const subUser = connection ? connection.context.subUser : null;
-        return { User, Practice, Appointment, Patient, Note, req, res, pubsub, subUser, user };
+      // Log requests
+      console.log('-----');
+      console.log(`HTTP request from '${req.get('Origin')}'`);
+      console.log(req.get('User-Agent'));
+      console.log('-----');
+
+      const subUser = connection ? connection.context.subUser : null;
+      return { User, Practice, Appointment, Patient, MedicalRecord, Note, req, res, pubsub, subUser, user };
     }
   },
   // Subscriptions are GraphQL operations that watch events emitted from Apollo Server.
@@ -121,28 +125,24 @@ const graphQLServer = new ApolloServer({
   },
 });
 
-const corsEndpoint =
+const endpoint =
   process.env.NODE_ENV === "development"
     ? `http://${process.env.CLIENT_URI}`
     : `https://${process.env.CLIENT_URI}`;
-
-console.log("CORSENDPOINT", corsEndpoint);
 
 graphQLServer.applyMiddleware({
   app,
   path: "/graphql",
   bodyParserConfig: {
-    limit: '100mb',
+    limit: '200mb',
   },
-  cors: { origin: corsEndpoint, credentials: true },
+  cors: { origin: endpoint, credentials: true },
 });
 
 const subscriptionEndpoint =
   process.env.NODE_ENV === "development"
     ? `ws://${process.env.SERVER_URI}${graphQLServer.graphqlPath}`
     : `wss://${process.env.SERVER_URI}${graphQLServer.graphqlPath}`;
-
-console.log("SUBSCRIPTION ENDPOINT", subscriptionEndpoint);
 
 app.get(
   "/playground",

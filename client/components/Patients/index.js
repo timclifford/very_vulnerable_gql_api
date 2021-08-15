@@ -1,7 +1,8 @@
 import { Fragment } from "react";
 import Router from "next/router";
 import { useRouter } from 'next/router';
-import PatientList from "../components/PatientList";
+import PatientList from "../PatientList";
+import PatientDirectory from "../PatientDirectory";
 import { Row, Col } from "reactstrap";
 import Link from "next/link";
 
@@ -10,7 +11,7 @@ const Patients = ({ me }) => {
   //   Router.push("/signin");
   //   return null;
   // }
-
+  //
   return (
     <Fragment>
       <Row style={{ paddingTop: "30px" }}>
@@ -19,14 +20,15 @@ const Patients = ({ me }) => {
               <button
                 className="bg-white hover:bg-gray-100 text-gray-800 text-sm font-semibold py-2 px-4 border border-gray-400 rounded"
                 style={{ cursor: "pointer" }}>
-                Add a patient
+                {me && me.roles.includes("doctor") ? <>Add a medical record</> : <>Add a patient</>}
               </button>
           </Link>
         </Col>
       </Row>
       <Row style={{ paddingTop: "30px" }}>
         <Col>
-          <PatientList user={me}/>
+          {me && me.roles.includes("doctor") && <PatientList user={me}/>}
+          {me && me.roles.includes("receptionist") && <PatientDirectory user={me}/>}
         </Col>
       </Row>
     </Fragment>

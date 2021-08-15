@@ -1,9 +1,9 @@
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { createHttpLink } from "apollo-link-http";
-import { ApolloLink, split } from "apollo-link";
-import { WebSocketLink } from "apollo-link-ws";
-import { getMainDefinition } from "apollo-utilities";
+import { ApolloClient, createHttpLink, ApolloLink, split } from '@apollo/client';
+import { ApolloCache, InMemoryCache } from '@apollo/client/cache';
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { RetryLink } from '@apollo/client/link/retry';
+import { isReference, isInlineFragment, getMainDefinition } from '@apollo/client/utilities';
+
 import fetch from "isomorphic-unfetch";
 import config from "../config";
 
@@ -11,12 +11,8 @@ const endpoint = process.browser ? config.clientEndpoint : config.serverEndpoint
 const wsEndpoint = config.wsEndpoint;
 
 export default function createApolloClient(initialState, headers) {
-  console.log("HEADERS", headers);
-
   const authLink = new ApolloLink((operation, forward) => {
-    const token = process.browser ? localStorage.getItem("token") : headers?.cookie.substring(6);
-
-  console.log(token);
+    const token = process.browser ? localStorage.getItem("token") : headers?.cookie && headers?.cookie.substring(6);
 
     operation.setContext({
       fetchOptions: {

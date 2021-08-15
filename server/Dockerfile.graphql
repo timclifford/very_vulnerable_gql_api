@@ -2,7 +2,7 @@ FROM node:alpine
 
 EXPOSE 8000
 
-RUN apk update && apk --no-cache add --virtual builds-deps build-base python
+RUN apk update && apk --no-cache add --virtual builds-deps build-base python3 py3-pip
 
 # Add docker-compose-wait tool
 ENV WAIT_VERSION 2.7.2
@@ -15,5 +15,5 @@ COPY yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 COPY . .
-CMD yarn run seed
+RUN yarn run seed
 CMD ["yarn", "start"]

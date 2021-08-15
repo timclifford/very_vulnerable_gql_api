@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/client";
 import { Card, CardBody, Form, FormGroup, Input } from "reactstrap";
 import POST_NOTE from "../../graphql/post-note.mutation";
 

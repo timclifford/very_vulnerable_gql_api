@@ -1,5 +1,5 @@
 import { Fragment, useState, useContext } from "react";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import {
   Collapse,
   Navbar,
@@ -22,6 +22,21 @@ const Header = () => {
   const toggle = () => setIsOpen(!isOpen);
   const { me } = useContext(UserContext);
 
+  const isAdmin = () => {
+    const roles = me && me.roles;
+    return roles && roles.includes("super-admin");
+  }
+
+  const isDoctor = () => {
+    const roles = me && me.roles;
+    return roles && roles.includes("doctor");
+  }
+
+  const isReceptionist = () => {
+    const roles = me && me.roles;
+    return roles && roles.includes("receptionist");
+  }
+
   return (
     <Navbar color="dark" dark expand="md">
       <Link href="/">
@@ -29,17 +44,41 @@ const Header = () => {
           style={{ cursor: "pointer", fontSize: "20px" }}
           className="font-weight-bold text-white"
         >
-          National Healthcare {me && `- ${me.practice.name}`}
+          National Healthcare {me && me.practice && `- ${me.practice.name}`}
         </NavLink>
       </Link>
       <NavbarToggler onClick={toggle} />
       <Collapse isOpen={isOpen} navbar>
         <Nav className="ml-auto" navbar>
-          <NavItem>
-            <Link href="/patients">
-              <NavLink style={{ cursor: "pointer" }}>Patients</NavLink>
-            </Link>
-          </NavItem>
+          {isDoctor() &&
+            <NavItem>
+              <Link href="/patients">
+                <NavLink style={{ cursor: "pointer" }}>Patients</NavLink>
+              </Link>
+            </NavItem>
+          }
+          {isReceptionist() &&
+            <NavItem>
+              <Link href="/patients-directory">
+                <NavLink style={{ cursor: "pointer" }}>Patients Directory</NavLink>
+              </Link>
+            </NavItem>
+          }
+          {isDoctor() || isReceptionist() &&
+            <NavItem>
+              <Link href="/appointments">
+                <NavLink style={{ cursor: "pointer" }}>Appointments</NavLink>
+              </Link>
+            </NavItem>
+          }
+          {isAdmin() &&
+            <NavItem>
+              <Link href="/admin/users">
+                <NavLink style={{ cursor: "pointer" }}>Users</NavLink>
+              </Link>
+            </NavItem>
+          }
+          <span className="spacer">|</span>
           {!me && (
             <Fragment>
               <NavItem>

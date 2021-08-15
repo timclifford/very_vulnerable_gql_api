@@ -2,6 +2,7 @@ import App from "next/app";
 import { UserProvider } from "../context/UserContext";
 import { withApollo } from "../lib/withApollo";
 import '../styles/index.css';
+import "react-datepicker/dist/react-datepicker.css";
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {

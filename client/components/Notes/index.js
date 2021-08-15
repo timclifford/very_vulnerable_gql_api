@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import NoteList from "./NoteList";
 import NOTES from "../../graphql/notes.query";
 import NEW_NOTE from "../../graphql/new-note.subscription";

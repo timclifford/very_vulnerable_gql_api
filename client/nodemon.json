@@ -1,0 +1,5 @@
+{
+  "watch": ["components", "context", "graphql", "lib", "pages", ""],
+  "exec": "next dev",
+  "ext": "js"
+}

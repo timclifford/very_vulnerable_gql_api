@@ -5,9 +5,14 @@ const PATIENTS = gql`
     patients(doctor: $doctor) {
       _id
       name
-      age
-      weight
-      sex
+      address
+      practice {
+        _id
+        name
+        address
+        phone_number
+      }
+      phone_number
       doctor
     }
   }

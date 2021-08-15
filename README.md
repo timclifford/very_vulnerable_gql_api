@@ -29,7 +29,7 @@ Logs
 ## Seed database
 
 `cd server`
-`seed -u 'mongodb://localhost:27017/vuln-graphql-db' --drop-database ./import-data/data`
+`seed -u 'mongodb://localhost:27017/vuln-graphql' --drop-database ./import-data/data`
 
 ## Logs
 

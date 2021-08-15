@@ -3,36 +3,21 @@ import gql from "graphql-tag";
 const PATIENT_ADD_MUTATION = gql`
   mutation addPatient(
     $name: String!,
-    $age: Int!,
-    $sex: String!,
-    $weight: String!,
-    $recent_heart_events: Boolean,
-    $current_health_assessment: HealthRisk,
-    $diabetes: Boolean,
-    $crp: CRPStatus,
+    $address: String,
     $phone_number: String,
-    $doctor: String!
+    $practice: String,
+    $doctor: String!,
   ) {
     addPatient(
       name: $name,
-      age: $age,
-      sex: $sex,
-      weight: $weight,
-      recent_heart_events: $recent_heart_events,
-      current_health_assessment: $current_health_assessment,
-      diabetes: $diabetes,
-      crp: $crp,
-      phone_number: $phone_number,
+      address: $address
+      phone_number: $phone_number
+      practice: $practice
       doctor: $doctor
     ) {
       _id
       name
-      sex
-      weight
-      recent_heart_events
-      current_health_assessment
-      diabetes
-      crp
+      address
       phone_number
       doctor
     }

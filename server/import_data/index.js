@@ -3,7 +3,7 @@ const { Seeder } = require('mongo-seeding');
 
 const config = {
   database: {
-    name: 'vuln-graphql-db',
+    name: 'vuln-graphql',
   },
   dropDatabase: true,
 };
@@ -15,11 +15,13 @@ const collections = seeder.readCollectionsFromPath(
   },
 );
 
+console.log('collections: ', collections);
+
 seeder
   .import(collections)
   .then(() => {
-    console.log('Success');
+    console.log('Successfully imported');
   })
   .catch(err => {
-    console.log('Error', err);
+    console.log('Error: ', err);
   });

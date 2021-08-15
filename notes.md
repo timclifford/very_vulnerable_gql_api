@@ -12,8 +12,7 @@ admin TOKEN
 ## Setup
 To run in development mode
 
-  `docker-compose up`
-  `yarn run dev` (serves client side and graphql server concurrently)
+  `docker-compose up -d`
 
 ## Authentication
 
@@ -25,7 +24,7 @@ Auth over websocket
 
 ## Seed database
 
-  `seed -u 'mongodb://localhost:27017/vuln-graphql-db' --drop-database ./import-data/data`
+  `seed -u 'mongodb://localhost:27017/vuln-graphql' --drop-database ./import-data/data`
 
 ## Mail
 

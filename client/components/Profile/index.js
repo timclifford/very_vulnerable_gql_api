@@ -20,14 +20,16 @@ const Profile = ({me}) => {
             <td className="border px-4 py-2 bg-gray-100">Email</td>
             <td className="border px-4 py-2">{me.email}</td>
           </tr>
-          <tr>
-            <td className="border px-4 py-2 bg-gray-100">Practice</td>
-            <td className="border px-4 py-2">
-              <p>{me.practice.name}</p>
-              <p>{me.practice.address}</p>
-              <p>{me.practice.phone_number}</p>
-            </td>
-          </tr>
+          {me.practice &&
+            <tr>
+              <td className="border px-4 py-2 bg-gray-100">Practice</td>
+              <td className="border px-4 py-2">
+                <p>{me.practice.name}</p>
+                <p>{me.practice.address}</p>
+                <p>{me.practice.phone_number}</p>
+              </td>
+            </tr>
+          }
           <tr>
             <td className="border px-4 py-2 bg-gray-100">Roles</td>
             <td className="border px-4 py-2">{me.roles.join(', ').toString()}</td>

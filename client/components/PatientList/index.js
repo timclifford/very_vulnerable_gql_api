@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import PATIENTS from "../../graphql/patients.query";
 import Link from "../Link";
 import Error from "../Errors";
@@ -19,7 +19,7 @@ const PatientList = (me) => {
     return <Error>Error: {JSON.stringify(error.message)}</Error>;
   }
 
-  const PatientLink = ({_id, text = "more"}) => {
+  const PatientLink = ({_id, text = "More"}) => {
     return (
       <Link
         to={'/patient/'+_id}
@@ -30,6 +30,17 @@ const PatientList = (me) => {
     )
   };
 
+  const EditPatientLink = ({_id, text = "Edit"}) => {
+    return (
+      <Link
+        to={'/patient/'+_id+'/edit'}
+        className="block leading-tight font-semibold text-gray-800 hover:underline"
+      >
+        {text}
+      </Link>
+    )
+  }
+
   return (
     <>
     {loading && <div className="py-4">Loading...</div>}
@@ -39,22 +50,26 @@ const PatientList = (me) => {
           <tr className="bg-gray-100 text-center">
             <th className="border px-4 py-2">Patient ID</th>
             <th className="border px-4 py-2">Name</th>
-            <th className="border px-4 py-2">Gender</th>
-            <th className="border px-4 py-2">Weight</th>
+            <th className="border px-4 py-2">Address</th>
+            <th className="border px-4 py-2">Practice</th>
+            <th className="border px-4 py-2">Phone number</th>
             <th className="border px-4 py-2">Doctor</th>
             <th className="border px-4 py-2">Details</th>
+            <th className="border px-4 py-2"></th>
           </tr>
         </thead>
-        {patients.map(({_id, name, sex, weight, doctor}) => {
+        {patients.map((patient, index) => {
           return (
-            <tbody key={_id}>
+            <tbody key={patient._id}>
               <tr className="text-center">
-                <td className="border px-4 py-2"><PatientLink _id={_id} text={_id}/></td>
-                <td className="border px-4 py-2">{name}</td>
-                <td className="border px-4 py-2">{sex}</td>
-                <td className="border px-4 py-2">{weight}</td>
-                <td className="border px-4 py-2">{doctor}</td>
-                <td className="border px-4 py-2"><PatientLink _id={_id}/></td>
+                <td className="border px-4 py-2"><PatientLink _id={patient._id} text={patient._id}/></td>
+                <td className="border px-4 py-2">{patient.name}</td>
+                <td className="border px-4 py-2">{patient.address}</td>
+                <td className="border px-4 py-2">{patient.practice.name}</td>
+                <td className="border px-4 py-2">{patient.phone_number}</td>
+                <td className="border px-4 py-2">{patient.doctor}</td>
+                <td className="border px-4 py-2"><PatientLink _id={patient._id}/></td>
+                <td className="border px-4 py-2"><EditPatientLink _id={patient._id}/></td>
               </tr>
             </tbody>
           )

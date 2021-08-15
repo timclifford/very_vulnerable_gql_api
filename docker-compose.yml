@@ -14,13 +14,29 @@ services:
       - graphql
   db:
     image: "mongo:latest"
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 128M
+        reservations:
+          cpus: 0.25
+          memory: 64M
     ports:
       - "27017:27017"
-    container_name: db
+    container_name: mongodb
   graphql:
     build:
       dockerfile: Dockerfile.graphql
       context: ./server
+    deploy:
+      resources:
+        limits:
+          cpus: 2.50
+          memory: 128M
+        reservations:
+          cpus: 1.25
+          memory: 128M
     ports:
       - "8000:8000"
     volumes:
@@ -30,15 +46,23 @@ services:
     command: sh -c "/wait && yarn run seed && yarn run dev"
     environment:
       - WAIT_HOSTS=db:27017
-      - WAIT_HOSTS_TIMEOUT=300
-      - WAIT_SLEEP_INTERVAL=30
-      - WAIT_HOST_CONNECT_TIMEOUT=30
+      - WAIT_HOSTS_TIMEOUT=15
+      - WAIT_SLEEP_INTERVAL=1
+      - WAIT_HOST_CONNECT_TIMEOUT=5
     depends_on:
       - db
   nginx:
     build:
       dockerfile: Dockerfile.nginx
       context: ./nginx
+    deploy:
+      resources:
+        limits:
+          cpus: 2.50
+          memory: 256M
+        reservations:
+          cpus: 1.25
+          memory: 128M
     ports:
       - "80:80"
     container_name: nginx
