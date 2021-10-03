@@ -1,0 +1,71 @@
+version: '3.8'
+services:
+  client:
+    build:
+      dockerfile: Dockerfile.client
+      context: ./client
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    container_name: client
+    depends_on:
+      - graphql
+  db:
+    image: "mongo:latest"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
+        reservations:
+          cpus: "0.25"
+          memory: 64M
+    ports:
+      - "27017:27017"
+    container_name: mongodb
+  graphql:
+    build:
+      dockerfile: Dockerfile.graphql
+      context: ./server
+    deploy:
+      resources:
+        limits:
+          cpus: "2.50"
+          memory: 128M
+        reservations:
+          cpus: "1.25"
+          memory: 128M
+    ports:
+      - "8000:8000"
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    container_name: graphql
+    command: sh -c "/wait && yarn run seed && yarn run dev"
+    environment:
+      - WAIT_HOSTS=db:27017
+      - WAIT_HOSTS_TIMEOUT=15
+      - WAIT_SLEEP_INTERVAL=1
+      - WAIT_HOST_CONNECT_TIMEOUT=5
+    depends_on:
+      - db
+  nginx:
+    build:
+      dockerfile: Dockerfile.nginx
+      context: ./nginx
+    deploy:
+      resources:
+        limits:
+          cpus: "2.50"
+          memory: 256M
+        reservations:
+          cpus: "1.25"
+          memory: 128M
+    ports:
+      - "80:80"
+    container_name: nginx
+    depends_on:
+      - graphql
+      - client

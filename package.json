@@ -1,0 +1,19 @@
+{
+  "name": "very_vulnerable_gql_api",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Tim Clifford",
+  "scripts": {
+    "dev": "concurrently \"cd server && yarn dev\" \"cd client && yarn dev\"",
+    "test": "jest --coverage",
+    "test-watch": "jest --watchAll"
+  },
+  "devDependencies": {
+    "ava": "^3.15.0",
+    "concurrently": "^5.1.0",
+    "jest": "^27.1.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0"
+  }
+}
