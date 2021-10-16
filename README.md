@@ -8,6 +8,12 @@ An intentionally vulnerable GraphQL based application.
 Build docker images and run in development mode:
 `docker-compose up -d`
 
+Ports:
+`nginx:80` - Load balancer
+`graphql:8080` - GraphQL server
+`client:3000` - Client-sdie UI (NextJS)
+`db:27017` - Database (mongodb) 
+
 To run without docker you can run (but you will also need to run mongodb):
 `yarn install`
 `yarn run dev` (serves client and graphql server concurrently)
@@ -21,6 +27,23 @@ Restart containers
 
 Logs
 `docker-compose logs --tail=10 --follow`
+
+
+## Environment variables
+
+Can be changed in `.env`
+
+```
+NODE_ENV=development
+
+MONGO_URI=mongodb://db:27017/vuln-graphql
+JWT_SECRET=apple
+
+CLIENT_URI=localhost:3000
+SERVER_URI=localhost:8000
+
+DOMAIN=localhost
+```
 
 ## Seed database
 
